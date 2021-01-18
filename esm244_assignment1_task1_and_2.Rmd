@@ -1,0 +1,27 @@
+---
+title: "ESM 244 Assignment 1 Task 1"
+author: "Grace Brofman"
+date: "1/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(tidyverse)
+library(janitor)
+library(lubridate)
+library(ggfortify)
+library(readxl)
+library(gghighlight)
+library(patchwork)
+library(plotly)
+```
+Read in excel file:
+```{r}
+sierra_amph <- read_excel("sierra_amphibians.xlsx")
+```
+
