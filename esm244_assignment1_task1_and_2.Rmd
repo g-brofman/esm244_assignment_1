@@ -19,6 +19,8 @@ library(readxl)
 library(gghighlight)
 library(patchwork)
 library(plotly)
+library(viridis)
+library(RColorBrewer)
 ```
 ### Task 1: Sierra Amphibian visualization
 
@@ -47,12 +49,17 @@ ramu_summary <- ramu_date %>%
   summarize(n_observed = sum(amphibian_number))
 
 # graph observations
-ggplot(data = ramu_summary,
+graph_1 <- ggplot(data = ramu_summary,
        aes(x = survey_year,
            y = n_observed,
            fill = amphibian_life_stage)) +
-  geom_col(position = "dodge")
+  geom_col(position = "dodge") +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(x = "Survey year", y = "Observation count", title = "Annual count of mountain yellow-legged frogs in 3 life stages")
   
+  
+graph_1
 
 
 ```
@@ -81,12 +88,22 @@ ramu_5_lakes[3,1] <- "Lake 10329"
 ramu_5_lakes[4,1] <- "Lake 20196"
 ramu_5_lakes[5,1] <- "Lake 10225"
   
-ggplot(data = ramu_5_lakes,
-       aes(x = fct_reorder(lake_id, total_observed, min),
+graph_2 <- ggplot(data = ramu_5_lakes,
+       aes(x = fct_reorder(lake_id, total_observed, min), #to reorder bars in ascending order
            y = total_observed)) +
-  geom_col() 
+  geom_col(aes(fill = total_observed)) +
+  theme_minimal() +
+  labs(x = "Lake ID", y = "Observation count", title = "Mountain yellow-legged frog observations in 5 most populous lakes") +
+  scale_fill_viridis(option = "C")
 
-lake_order <- c("Lake 50183", "Lake 10223", "Lake 10329", "Lake 20196", "Lake 10225")
+graph_2
+
+```
+Combine your two graphs into a single compound figure using the {patchwork} package. Add a finalized figure caption that appears below the compound figure in your knitted html. Note: You might realize once you combine your graphs into a single compound figure, you need to update the formatting (e.g. move legends or instead directly label, etc.). You should customize as necessary to make it a professional final output.
+
+```{r}
+
+graph_1 / graph_2
 
 ```
 
