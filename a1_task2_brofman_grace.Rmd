@@ -1,0 +1,65 @@
+---
+title: "ESM244 Assignment 1 Task 2"
+author: "Grace Brofman"
+date: "1/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(lubridate)
+library(ggfortify)
+library(readxl)
+library(gghighlight)
+library(patchwork)
+library(plotly)
+library(viridis)
+library(RColorBrewer)
+```
+
+```{r}
+# read in csv
+usda <- read_csv("usda_nutrients.csv") %>% 
+  clean_names()
+
+# filter for dairy products
+dairy <- usda %>% 
+  filter(food_group == "Dairy and Egg Products")
+
+# filter for cheese
+cheese <- dairy %>% 
+  filter(str_detect(descrip, "Cheese")) %>%  
+  filter(str_detect(short_descrip, "CHEESE")) %>% 
+  separate(descrip, into = c("cheese", "variety"), sep = "Cheese, ") %>% #separated "cheeese" from in front of each variety, created 2 columns from 1
+  select(-(1:4)) %>% # removing unnecessary columns
+  select(-(2:4)) %>% 
+  select(-(25:39)) %>% # removing some nutrient data to reduce predictor variables
+  drop_na() 
+
+# format for PCA
+cheese_pca <- cheese %>% 
+  select(c(2:24)) %>% # selecting predictor variables
+  scale() %>%  # scaling values
+  prcomp() # principle components analysis
+
+cheese_pca$rotation
+
+# create new dataset that contains all data for biplot
+cheese_complete <- cheese %>% 
+  drop_na(c(2:24))
+
+# creating biplot of cheese_pca
+
+autoplot(cheese_pca,
+         data = cheese_complete,
+         colour = "variety",
+         loadings = TRUE,
+         loadings.label = TRUE)
+
+```
+
