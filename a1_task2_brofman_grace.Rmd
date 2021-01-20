@@ -39,11 +39,15 @@ cheese <- dairy %>%
   select(-(1:4)) %>% # removing unnecessary columns
   select(-(2:4)) %>% 
   select(-(25:39)) %>% # removing some nutrient data to reduce predictor variables
+  select(-(8:12)) %>% 
+  select(-(16:19)) %>% 
+  select(-magnesium_mg) %>% 
+  select(-copper_mcg) %>% 
   drop_na() 
 
 # format for PCA
 cheese_pca <- cheese %>% 
-  select(c(2:24)) %>% # selecting predictor variables
+  select(c(2:13)) %>% # selecting predictor variables
   scale() %>%  # scaling values
   prcomp() # principle components analysis
 
@@ -51,15 +55,18 @@ cheese_pca$rotation
 
 # create new dataset that contains all data for biplot
 cheese_complete <- cheese %>% 
-  drop_na(c(2:24))
+  drop_na(c(2:13))
 
 # creating biplot of cheese_pca
 
 autoplot(cheese_pca,
          data = cheese_complete,
-         colour = "variety",
+         label = TRUE,
          loadings = TRUE,
-         loadings.label = TRUE)
+         loadings.label = TRUE) +
+  theme_minimal()
+
+# after looking at the resulting biplot, there are too many predictor variable to be able to distinguish. I'll trim down the predictor variables for a cleaner biplot
 
 ```
 
